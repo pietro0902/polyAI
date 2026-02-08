@@ -44,3 +44,5 @@ Thumbs.db
 nul
 *.tsbuildinfo
 supabase/.temp/
+supabase/config.toml
+supabase/.gitignore
