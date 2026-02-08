@@ -56,6 +56,8 @@ class MarketBase(BaseModel):
     description: str | None = None
     category: str | None = None
     slug: str | None = None
+    event_slug: str | None = None
+    polymarket_url: str | None = None
     outcomes: list[str] = Field(default_factory=list)
     outcome_prices: list[float] = Field(default_factory=list)
     end_date: datetime | None = None
@@ -64,6 +66,8 @@ class MarketBase(BaseModel):
     status: MarketStatus = MarketStatus.ACTIVE
     outcome: str | None = None
     clob_token_ids: list[str] = Field(default_factory=list)
+    web_research: str | None = None
+    web_research_at: datetime | None = None
 
 
 class MarketCreate(MarketBase):

@@ -5,6 +5,8 @@ export interface Market {
   description: string | null;
   category: string | null;
   slug: string | null;
+  event_slug: string | null;
+  polymarket_url: string | null;
   outcomes: string[];
   outcome_prices: number[];
   end_date: string | null;
@@ -13,6 +15,8 @@ export interface Market {
   status: "active" | "closed" | "resolved" | "archived";
   outcome: string | null;
   clob_token_ids: string[];
+  web_research: string | null;
+  web_research_at: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -84,4 +88,17 @@ export interface PnlPoint {
   date: string;
   cumulative_pnl: number;
   daily_pnl: number;
+}
+
+export interface ExploreMarket {
+  id: string;
+  question: string;
+  description: string;
+  category: string;
+  outcomes: string[];
+  outcome_prices: number[];
+  volume: number;
+  liquidity: number;
+  end_date: string | null;
+  slug: string;
 }

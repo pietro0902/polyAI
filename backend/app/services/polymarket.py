@@ -24,6 +24,23 @@ async def fetch_active_markets(limit: int = 50) -> list[dict]:
         return resp.json()
 
 
+async def fetch_explore_markets(limit: int = 200) -> list[dict]:
+    """Fetch a large batch of active markets for the explore page."""
+    async with httpx.AsyncClient(timeout=30) as client:
+        resp = await client.get(
+            f"{GAMMA_BASE}/markets",
+            params={
+                "closed": "false",
+                "limit": limit,
+                "order": "volume",
+                "ascending": "false",
+                "active": "true",
+            },
+        )
+        resp.raise_for_status()
+        return resp.json()
+
+
 async def fetch_market_by_id(polymarket_id: str) -> dict | None:
     """Fetch a single market from Gamma API."""
     async with httpx.AsyncClient(timeout=30) as client:
@@ -116,6 +133,7 @@ async def upsert_markets(raw_markets: list[dict]) -> int:
             "description": m.get("description", ""),
             "category": m.get("category") or m.get("groupSlug", ""),
             "slug": m.get("slug", ""),
+            "event_slug": (m.get("events") or [{}])[0].get("slug", "") if m.get("events") else "",
             "outcomes": outcomes,
             "outcome_prices": outcome_prices,
             "end_date": end_date,

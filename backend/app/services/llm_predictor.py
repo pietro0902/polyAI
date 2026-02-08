@@ -2,6 +2,7 @@ import asyncio
 import json
 import re
 import time
+from datetime import datetime, timezone
 from typing import Any
 
 from openai import AsyncOpenAI
@@ -120,6 +121,13 @@ async def get_all_predictions(market: dict) -> list[dict]:
         question=market.get("question", ""),
         description=market.get("description", ""),
     )
+
+    # Save web research to the market record
+    if research_context:
+        supabase.table("markets").update({
+            "web_research": research_context,
+            "web_research_at": datetime.now(timezone.utc).isoformat(),
+        }).eq("id", market_id).execute()
 
     prompt = build_prediction_prompt(market, research_context=research_context)
 

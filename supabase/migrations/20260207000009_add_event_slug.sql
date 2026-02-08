@@ -1,0 +1,1 @@
+ALTER TABLE markets ADD COLUMN IF NOT EXISTS event_slug TEXT;

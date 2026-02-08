@@ -92,7 +92,18 @@ export default function MarketDetailPage() {
     <div className="space-y-6">
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-2xl font-bold">{market.question}</h1>
+          {market.polymarket_url ? (
+            <a
+              href={market.polymarket_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-2xl font-bold hover:text-primary transition-colors"
+            >
+              {market.question} ↗
+            </a>
+          ) : (
+            <h1 className="text-2xl font-bold">{market.question}</h1>
+          )}
           <div className="flex items-center gap-2 mt-2">
             <Badge
               variant={
@@ -128,6 +139,26 @@ export default function MarketDetailPage() {
         <Card>
           <CardContent className="p-4">
             <p className="text-sm text-muted-foreground">{market.description}</p>
+          </CardContent>
+        </Card>
+      )}
+
+      {market.web_research && (
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle>Web Research</CardTitle>
+              {market.web_research_at && (
+                <span className="text-xs text-muted-foreground">
+                  {timeAgo(market.web_research_at)}
+                </span>
+              )}
+            </div>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+              {market.web_research}
+            </p>
           </CardContent>
         </Card>
       )}

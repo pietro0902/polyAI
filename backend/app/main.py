@@ -28,7 +28,7 @@ app.add_middleware(
 )
 
 # Register routers
-from app.routers import health, markets, predictions, consensus, performance, models  # noqa: E402
+from app.routers import health, markets, predictions, consensus, performance, models, explore  # noqa: E402
 
 app.include_router(health.router, prefix="/api")
 app.include_router(markets.router, prefix="/api")
@@ -36,3 +36,4 @@ app.include_router(predictions.router, prefix="/api")
 app.include_router(consensus.router, prefix="/api")
 app.include_router(performance.router, prefix="/api")
 app.include_router(models.router, prefix="/api")
+app.include_router(explore.router, prefix="/api")

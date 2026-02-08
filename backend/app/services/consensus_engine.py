@@ -109,11 +109,8 @@ async def compute_consensus(market: dict, predictions: list[dict]) -> dict | Non
     ev = (ai_probability * (1 - market_price)) - ((1 - ai_probability) * market_price)
     edge = ai_probability - market_price
 
-    # Decision: trade only if EV > 0 (positive expected value)
-    if ev > 0 and agreement_ratio >= 0.5:
-        final_decision = majority
-    else:
-        final_decision = "NO_TRADE"
+    # Decision follows majority vote; EV is informational only
+    final_decision = majority
 
     # Bet odds
     if final_decision == "YES":

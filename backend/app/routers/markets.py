@@ -6,6 +6,16 @@ from app.utils.logger import log
 router = APIRouter(tags=["markets"])
 
 
+def _add_polymarket_url(data: dict) -> dict:
+    """Extract event slug from raw_data and build the Polymarket URL."""
+    raw = data.get("raw_data") or {}
+    events = raw.get("events") or []
+    event_slug = events[0].get("slug") if events else None
+    slug = event_slug or data.get("slug")
+    data["polymarket_url"] = f"https://polymarket.com/event/{slug}" if slug else None
+    return data
+
+
 @router.get("/markets", response_model=list[MarketResponse])
 async def list_markets(
     status: str | None = None,
@@ -22,7 +32,7 @@ async def list_markets(
     offset = (page - 1) * limit
     query = query.order("created_at", desc=True).range(offset, offset + limit - 1)
     result = query.execute()
-    return result.data
+    return [_add_polymarket_url(m) for m in result.data]
 
 
 @router.get("/markets/{market_id}", response_model=MarketDetail)
@@ -34,7 +44,7 @@ async def get_market(market_id: str):
     preds = supabase.table("predictions").select("*").eq("market_id", market_id).execute()
     cons_result = supabase.table("consensus").select("*").eq("market_id", market_id).execute()
 
-    data = market.data
+    data = _add_polymarket_url(market.data)
     data["predictions"] = preds.data or []
     data["consensus"] = cons_result.data[0] if cons_result.data else None
     return data

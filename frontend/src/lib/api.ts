@@ -7,6 +7,7 @@ import type {
   PerformanceSummary,
   ModelPerformance,
   PnlPoint,
+  ExploreMarket,
 } from "./types";
 
 const API_BASE = "/api";
@@ -63,6 +64,16 @@ export const api = {
     summary: () => fetchJson<PerformanceSummary>("/performance/summary"),
     byModel: () => fetchJson<ModelPerformance[]>("/performance/by-model"),
     pnlHistory: () => fetchJson<PnlPoint[]>("/performance/pnl-history"),
+  },
+  explore: {
+    list: (category?: string) => {
+      const qs = category ? `?category=${encodeURIComponent(category)}` : "";
+      return fetchJson<Record<string, ExploreMarket[]>>(`/explore${qs}`);
+    },
+    track: (polymarketId: string) =>
+      postJson<{ status: string; tracked: boolean; polymarket_id: string }>(
+        `/explore/track/${polymarketId}`
+      ),
   },
   models: {
     list: (enabled?: boolean) => {

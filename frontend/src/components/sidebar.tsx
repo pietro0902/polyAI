@@ -7,6 +7,7 @@ import { useModels } from "@/hooks/useModels";
 
 const navItems = [
   { href: "/", label: "Dashboard", icon: "H" },
+  { href: "/explore", label: "Explore", icon: "E" },
   { href: "/markets", label: "Markets", icon: "M" },
   { href: "/performance", label: "Performance", icon: "P" },
   { href: "/settings", label: "Settings", icon: "S" },

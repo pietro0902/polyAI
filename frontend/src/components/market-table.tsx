@@ -43,6 +43,7 @@ export function MarketTable({ markets, loading, consensusMap = {} }: MarketTable
             <th className="pb-3 font-medium text-muted-foreground">Edge</th>
             <th className="pb-3 font-medium text-muted-foreground">Volume</th>
             <th className="pb-3 font-medium text-muted-foreground">Status</th>
+            <th className="pb-3 font-medium text-muted-foreground">Outcome</th>
             <th className="pb-3 font-medium text-muted-foreground">Added</th>
           </tr>
         </thead>
@@ -50,12 +51,25 @@ export function MarketTable({ markets, loading, consensusMap = {} }: MarketTable
           {markets.map((market) => (
             <tr key={market.id} className="border-b hover:bg-muted/50 transition-colors">
               <td className="py-3 pr-4 max-w-md">
-                <Link
-                  href={`/markets/${market.id}`}
-                  className="font-medium hover:text-primary transition-colors line-clamp-2"
-                >
-                  {market.question}
-                </Link>
+                <div className="flex items-center gap-1">
+                  <Link
+                    href={`/markets/${market.id}`}
+                    className="font-medium hover:text-primary transition-colors line-clamp-2"
+                  >
+                    {market.question}
+                  </Link>
+                  {market.polymarket_url && (
+                    <a
+                      href={market.polymarket_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-muted-foreground hover:text-primary transition-colors shrink-0"
+                      title="View on Polymarket"
+                    >
+                      ↗
+                    </a>
+                  )}
+                </div>
                 {market.category && (
                   <span className="text-xs text-muted-foreground ml-2">
                     {market.category}
@@ -118,6 +132,28 @@ export function MarketTable({ markets, loading, consensusMap = {} }: MarketTable
                 >
                   {market.status}
                 </Badge>
+              </td>
+              <td className="py-3 pr-4">
+                {market.outcome ? (
+                  (() => {
+                    const c = consensusMap[market.id];
+                    const aiCorrect = c && c.is_correct;
+                    return (
+                      <div className="flex items-center gap-1.5">
+                        <Badge variant={market.outcome.toLowerCase() === "yes" ? "success" : "destructive"}>
+                          {market.outcome}
+                        </Badge>
+                        {c && c.is_correct !== null && (
+                          <span className={`text-xs font-medium ${aiCorrect ? "text-green-600" : "text-red-600"}`}>
+                            {aiCorrect ? "AI correct" : "AI wrong"}
+                          </span>
+                        )}
+                      </div>
+                    );
+                  })()
+                ) : (
+                  <span className="text-muted-foreground">—</span>
+                )}
               </td>
               <td className="py-3 text-muted-foreground">
                 {market.created_at ? timeAgo(market.created_at) : "—"}
