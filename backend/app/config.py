@@ -23,6 +23,7 @@ class Settings(BaseSettings):
     market_poll_interval_minutes: int = 5
     odds_update_interval_minutes: int = 1
     resolution_check_interval_minutes: int = 60
+    trader_scan_interval_minutes: int = 30
 
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
 

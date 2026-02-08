@@ -10,6 +10,7 @@ def start_scheduler():
     from app.workers.market_poller import poll_markets
     from app.workers.odds_updater import update_odds
     from app.workers.resolution_checker import check_resolutions
+    from app.workers.trader_scanner import scan_top_traders
 
     scheduler.add_job(
         poll_markets,
@@ -32,6 +33,14 @@ def start_scheduler():
         IntervalTrigger(minutes=settings.resolution_check_interval_minutes),
         id="resolution_checker",
         name="Check resolved markets",
+        replace_existing=True,
+    )
+
+    scheduler.add_job(
+        scan_top_traders,
+        IntervalTrigger(minutes=settings.trader_scan_interval_minutes),
+        id="trader_scanner",
+        name="Scan top traders and refresh watchlist",
         replace_existing=True,
     )
 

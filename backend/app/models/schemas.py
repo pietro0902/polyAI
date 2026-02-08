@@ -168,6 +168,101 @@ class PnlPoint(BaseModel):
     daily_pnl: float
 
 
+# --- Traders ---
+
+class LeaderboardEntry(BaseModel):
+    rank: int = 0
+    userName: str = ""
+    proxyWallet: str = ""
+    vol: float = 0
+    pnl: float = 0
+    profileImage: str = ""
+    xUsername: str = ""
+    verifiedBadge: bool = False
+
+
+class TrackedTraderResponse(BaseModel):
+    id: str
+    proxy_wallet: str
+    username: str | None = None
+    profile_image: str | None = None
+    x_username: str | None = None
+    verified_badge: bool = False
+    bio: str | None = None
+    pnl: float = 0
+    volume: float = 0
+    rank: int | None = None
+    category: str = "OVERALL"
+    auto_discovered: bool = False
+    last_refreshed_at: datetime | None = None
+    created_at: datetime | None = None
+    updated_at: datetime | None = None
+
+    model_config = {"from_attributes": True}
+
+
+class TraderTradeResponse(BaseModel):
+    id: str
+    trader_id: str
+    proxy_wallet: str
+    side: str
+    condition_id: str | None = None
+    market_title: str | None = None
+    market_slug: str | None = None
+    outcome: str | None = None
+    size: float = 0
+    price: float = 0
+    transaction_hash: str | None = None
+    traded_at: datetime
+    created_at: datetime | None = None
+
+    model_config = {"from_attributes": True}
+
+
+class TraderDetailResponse(TrackedTraderResponse):
+    trades: list[TraderTradeResponse] = Field(default_factory=list)
+    trade_count: int = 0
+    active_markets: int = 0
+
+
+class TraderActivityResponse(BaseModel):
+    type: str = ""
+    side: str = ""
+    title: str = ""
+    slug: str = ""
+    icon: str = ""
+    outcome: str = ""
+    size: float = 0
+    usdc_size: float = 0
+    price: float = 0
+    timestamp: int = 0
+    transaction_hash: str = ""
+
+
+class TraderPositionResponse(BaseModel):
+    condition_id: str = ""
+    title: str = ""
+    slug: str = ""
+    icon: str = ""
+    outcome: str = ""
+    size: float = 0
+    avg_price: float = 0
+    cur_price: float = 0
+    initial_value: float = 0
+    current_value: float = 0
+    cash_pnl: float = 0
+    percent_pnl: float = 0
+    realized_pnl: float = 0
+    redeemable: bool = False
+
+
+class TraderStatsResponse(BaseModel):
+    total_tracked: int = 0
+    total_trades: int = 0
+    avg_pnl: float = 0
+    top_trader: str | None = None
+
+
 # --- Health ---
 
 class HealthResponse(BaseModel):

@@ -8,6 +8,13 @@ import type {
   ModelPerformance,
   PnlPoint,
   ExploreMarket,
+  LeaderboardEntry,
+  TrackedTrader,
+  TraderDetail,
+  TraderTrade,
+  TraderActivity,
+  TraderPosition,
+  TraderStats,
 } from "./types";
 
 const API_BASE = "/api";
@@ -85,5 +92,47 @@ export const api = {
     update: (id: string, data: Partial<Pick<LlmModel, "display_name" | "openrouter_id" | "enabled">>) =>
       mutateJson<LlmModel>("PUT", `/models/${id}`, data),
     delete: (id: string) => mutateJson<{ status: string }>("DELETE", `/models/${id}`),
+  },
+  traders: {
+    leaderboard: (params?: { category?: string; timePeriod?: string; orderBy?: string; limit?: number; offset?: number }) => {
+      const sp = new URLSearchParams();
+      if (params?.category) sp.set("category", params.category);
+      if (params?.timePeriod) sp.set("timePeriod", params.timePeriod);
+      if (params?.orderBy) sp.set("orderBy", params.orderBy);
+      if (params?.limit) sp.set("limit", String(params.limit));
+      if (params?.offset) sp.set("offset", String(params.offset));
+      const qs = sp.toString();
+      return fetchJson<LeaderboardEntry[]>(`/traders/leaderboard${qs ? `?${qs}` : ""}`);
+    },
+    tracked: () => fetchJson<TrackedTrader[]>("/traders/tracked"),
+    track: (wallet: string) => postJson<TrackedTrader>(`/traders/track/${wallet}`),
+    untrack: (traderId: string) =>
+      mutateJson<{ status: string; deleted: string }>("DELETE", `/traders/track/${traderId}`),
+    get: (traderId: string) => fetchJson<TraderDetail>(`/traders/${traderId}`),
+    activity: (traderId: string, params?: { limit?: number; offset?: number }) => {
+      const sp = new URLSearchParams();
+      if (params?.limit) sp.set("limit", String(params.limit));
+      if (params?.offset) sp.set("offset", String(params.offset));
+      const qs = sp.toString();
+      return fetchJson<TraderActivity[]>(`/traders/${traderId}/activity${qs ? `?${qs}` : ""}`);
+    },
+    positions: (traderId: string, params?: { limit?: number; offset?: number }) => {
+      const sp = new URLSearchParams();
+      if (params?.limit) sp.set("limit", String(params.limit));
+      if (params?.offset) sp.set("offset", String(params.offset));
+      const qs = sp.toString();
+      return fetchJson<TraderPosition[]>(`/traders/${traderId}/positions${qs ? `?${qs}` : ""}`);
+    },
+    trades: (traderId: string, params?: { side?: string; limit?: number; offset?: number }) => {
+      const sp = new URLSearchParams();
+      if (params?.side) sp.set("side", params.side);
+      if (params?.limit) sp.set("limit", String(params.limit));
+      if (params?.offset) sp.set("offset", String(params.offset));
+      const qs = sp.toString();
+      return fetchJson<TraderTrade[]>(`/traders/${traderId}/trades${qs ? `?${qs}` : ""}`);
+    },
+    refresh: (traderId: string) => postJson<{ status: string; trades_refreshed: number }>(`/traders/${traderId}/refresh`),
+    refreshAll: () => postJson<{ status: string; refreshed: number }>("/traders/refresh-all"),
+    stats: () => fetchJson<TraderStats>("/traders/stats/summary"),
   },
 };

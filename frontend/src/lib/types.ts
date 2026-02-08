@@ -90,6 +90,95 @@ export interface PnlPoint {
   daily_pnl: number;
 }
 
+export interface LeaderboardEntry {
+  rank: number;
+  userName: string;
+  proxyWallet: string;
+  vol: number;
+  pnl: number;
+  profileImage: string;
+  xUsername: string;
+  verifiedBadge: boolean;
+}
+
+export interface TrackedTrader {
+  id: string;
+  proxy_wallet: string;
+  username: string | null;
+  profile_image: string | null;
+  x_username: string | null;
+  verified_badge: boolean;
+  bio: string | null;
+  pnl: number;
+  volume: number;
+  rank: number | null;
+  category: string;
+  auto_discovered: boolean;
+  last_refreshed_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TraderTrade {
+  id: string;
+  trader_id: string;
+  proxy_wallet: string;
+  side: "BUY" | "SELL";
+  condition_id: string | null;
+  market_title: string | null;
+  market_slug: string | null;
+  outcome: string | null;
+  size: number;
+  price: number;
+  transaction_hash: string | null;
+  traded_at: string;
+  created_at: string;
+}
+
+export interface TraderActivity {
+  type: string;
+  side: string;
+  title: string;
+  slug: string;
+  icon: string;
+  outcome: string;
+  size: number;
+  usdc_size: number;
+  price: number;
+  timestamp: number;
+  transaction_hash: string;
+}
+
+export interface TraderPosition {
+  condition_id: string;
+  title: string;
+  slug: string;
+  icon: string;
+  outcome: string;
+  size: number;
+  avg_price: number;
+  cur_price: number;
+  initial_value: number;
+  current_value: number;
+  cash_pnl: number;
+  percent_pnl: number;
+  realized_pnl: number;
+  redeemable: boolean;
+}
+
+export interface TraderDetail extends TrackedTrader {
+  trades: TraderTrade[];
+  trade_count: number;
+  active_markets: number;
+}
+
+export interface TraderStats {
+  total_tracked: number;
+  total_trades: number;
+  avg_pnl: number;
+  top_trader: string | null;
+}
+
 export interface ExploreMarket {
   id: string;
   question: string;
